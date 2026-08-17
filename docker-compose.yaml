@@ -22,6 +22,21 @@ services:
           path: "./backend/requirements.txt"
         - action: restart
           path: "./backend/src/"
+  # We are gonna have like 
+  #DATABASE_URL=postgresql+psycopg://username:password@dbhost:dbport/dbname
+  db_service:
+    image: postgres:15.3-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - managed_db_data:/var/lib/postgresql/data # Standard location for mounting for postgres data, this is where the database files will be stored. We are using a managed volume here, which is defined at the bottom of this file.
+    env_file:
+      - .env.sample_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
   static_html:
     build:
       context: ./static_html
@@ -31,3 +46,7 @@ services:
     command: python -m http.server 8000
     volumes:
       - "./static_html/src:/app"
+
+# When we want managed volumes, we can define them here. This is useful for persisting data across container restarts.
+volumes:
+  managed_db_data: # This is the definition of the volume, inside service we just tell how to mount this.
