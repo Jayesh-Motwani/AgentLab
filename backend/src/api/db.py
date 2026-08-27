@@ -2,7 +2,8 @@ import os
 import sqlmodel
 from sqlmodel import Session, SQLModel
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = "postgresql+psycopg://dbuser:dbpass@db_service:5432/mydb"
+# DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if not DATABASE_URL:  # Empty string evaluates to false
     raise NotImplementedError("\'DATABASE_URL\' cannot be empty")

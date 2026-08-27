@@ -9,11 +9,13 @@ services:
     environment:
       - PORT=8000
       - MY_PROJECT_NAME=Hello World Project # we can have env vars that are not secret and can be hardcoded in the compose file
-      - API_KEY=${API_KEY} # this will be read from the .env file in the root directory of the project
-    env_file:
-      - .env.sample # this will load the environment variables from the .env.sample file in the root directory of the project
+      - API_KEY=abc123 # this will be read from the .env file in the root directory of the project
+    # env_file:
+    #   - .env.sample # this will load the environment variables from the .env.sample file in the root directory of the project
     volumes:
       - "./backend/src:/app" # . here is not build context, but the current directory of the docker-compose.yaml file
+    depends_on:
+      - db_service
     develop:
       watch:
         - action: rebuild
@@ -25,28 +27,27 @@ services:
   # We are gonna have like 
   #DATABASE_URL=postgresql+psycopg://username:password@dbhost:dbport/dbname
   db_service:
-    image: postgres:15.3-alpine
+    image: postgres:17.5
     ports:
       - "5432:5432"
     volumes:
       - managed_db_data:/var/lib/postgresql/data # Standard location for mounting for postgres data, this is where the database files will be stored. We are using a managed volume here, which is defined at the bottom of this file.
-    env_file:
-      - .env.sample_db
+    # env_file:
+    #   - .env.sample_db
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=dbpass
+      - POSTGRES_DB=mydb
+  # static_html:
+  #   build:
+  #     context: ./static_html
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   command: python -m http.server 8000
+  #   volumes:
+  #     - "./static_html/src:/app"
 
-  static_html:
-    build:
-      context: ./static_html
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    command: python -m http.server 8000
-    volumes:
-      - "./static_html/src:/app"
-
-# When we want managed volumes, we can define them here. This is useful for persisting data across container restarts.
+  # When we want managed volumes, we can define them here. This is useful for persisting data across container restarts.
 volumes:
   managed_db_data: # This is the definition of the volume, inside service we just tell how to mount this.

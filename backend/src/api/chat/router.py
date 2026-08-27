@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from models import ChatMessagePayload, ChatMessage
+from api.chat.models import ChatMessagePayload, ChatMessage
 from sqlmodel import Session
 from api.db import get_session
 
@@ -12,6 +12,7 @@ def chat_health():
 
 
 # HTTP POST -> payload = {"message": "Hello"} -> {"message": "Hello", "id": 1}
+# curl -X POST -d '{"message": "Hello_World"}' http://localhost:8080/api/chats/
 # response_model lets us serialize our payload
 @router.post("/", response_model=ChatMessage)
 def chat_create_message(
