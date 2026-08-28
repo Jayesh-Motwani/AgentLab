@@ -88,31 +88,14 @@ Architecture diagram
 [Client] <--> [FastAPI HTTP Layer] <--> [Supervisor Agent] <--> [Research Agents]
                                          \--> [Tools: Mailer, Web fetch, Storage]
 
-Configuration
--------------
-Environment variables (examples):
-- MAILER_SMTP_HOST - SMTP host for the mail tool
-- MAILER_SMTP_PORT - SMTP port
-- MAILER_USERNAME - SMTP user
-- MAILER_PASSWORD - SMTP password
-- DATABASE_URL - DB connection if persistent storage is used
-
 Contributing
 ------------
-Contributions are welcome. Suggested workflow:
-- Fork the repository
-- Create a feature branch
-- Implement changes and tests where appropriate
-- Create a PR with a clear description of changes
+Currently not accepting Contributions until desired v1 stage is reached.
 
 License
 -------
-Add license information to the repository root (e.g., LICENSE) if needed.
+N/A
 
 Acknowledgements
 ----------------
-This project scaffolds a LangGraph-based multi-agent research system and was bootstrapped with Copilot assistance. Documentation will be expanded as components are implemented.
-
-Contact
--------
-For questions about the architecture or to coordinate development, open an issue or contact the repository maintainers.
+This project scaffolds a LangGraph-based multi-agent research system. Documentation will be expanded as components are implemented. Only the Documentation and Readme has been created using Copilot or AI, everything else being completely Human Generated/Written.
