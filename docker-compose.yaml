@@ -10,8 +10,10 @@ services:
       - PORT=8000
       - MY_PROJECT_NAME=Hello World Project # we can have env vars that are not secret and can be hardcoded in the compose file
       - API_KEY=abc123 # this will be read from the .env file in the root directory of the project
-    # env_file:
-    #   - .env.sample # this will load the environment variables from the .env.sample file in the root directory of the project
+      - EMAIL_ADDRESS=${EMAIL_ADDRESS}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    env_file:
+      - .env # this will load the environment variables from the .env.sample file in the root directory of the project
     volumes:
       - "./backend/src:/app" # . here is not build context, but the current directory of the docker-compose.yaml file
     depends_on:
