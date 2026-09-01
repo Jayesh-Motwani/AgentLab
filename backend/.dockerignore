@@ -1,1 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+.git/
+.venv/
+.pytest_cache/
+.mypy_cache/
 src/ignoreme

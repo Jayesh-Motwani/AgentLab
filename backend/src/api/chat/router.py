@@ -1,10 +1,9 @@
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from api.chat.models import ChatMessagePayload, ChatMessage, ChatMessageResponseList
 from sqlmodel import Session, select
 from api.db import get_session
-from api.ai.schemas import EmailMessage
-from api.ai.services import generate_email_message
+from api.ai.agents import get_supervisor
 
 router = APIRouter()
 
@@ -32,7 +31,7 @@ curl.exe - - % -X POST - H "Content-Type: application/json" - d "{\"message\":\"
 '''
 
 
-@router.post("/", response_model=EmailMessage)
+@router.post("/")
 def chat_create_message(
     payload: ChatMessagePayload,
     session: Session = Depends(get_session)
@@ -50,8 +49,39 @@ def chat_create_message(
     # ready to store in the database
     session.add(obj)
     session.commit()  # obj won't be in the database until we commit
-    # session.refresh(obj)  # ensures primary key is added to payload instance
 
-    # The query here now is gonna be payload message
-    response = generate_email_message(payload.message)
-    return response
+    supe = get_supervisor()
+    msg_data = {
+        "messages": [
+            {"role": "user",
+              "content": f"{payload.message}"},
+        ]
+    }
+
+    try:
+        response = supe.invoke(msg_data)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The AI service is currently rate-limited or unavailable. Please try again in a few minutes."
+        ) from exc
+
+    if not response:
+        raise HTTPException(status_code=400, detail="Error with supervisor")
+    messages = response.get("messages")
+    if not messages:
+        raise HTTPException(status_code=400, detail="Error with supervisor")
+    last_message = messages[-1]
+    content = getattr(last_message, "content", None)
+    if content is None and isinstance(last_message, dict):
+        content = last_message.get("content")
+    if content is None:
+        raise HTTPException(status_code=500, detail="No content returned from supervisor")
+
+    if isinstance(content, list):
+        content = "\n".join(
+            part.get("text", "") if isinstance(part, dict) else str(part)
+            for part in content
+        )
+
+    return {"content": str(content)}

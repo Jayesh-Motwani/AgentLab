@@ -1,5 +1,5 @@
 import os
-from gmail_imap_parser import GmailImapParser
+from api.myemailer.gmail_imap_parser import GmailImapParser
 
 EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")

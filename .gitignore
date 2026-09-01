@@ -5,3 +5,5 @@ backend/src/__pycache__
 .venv/
 .venv
 .venv/*
+backend/src/reports
+backend/src/images
