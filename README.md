@@ -1,6 +1,6 @@
-# Docker Learn
+# AgentLab
 
-This repository is a small FastAPI service built around a LangGraph-based supervisor and research workflow. The application records chat messages in PostgreSQL, invokes a supervisor agent, and uses tool-backed agents for research, email handling, and report generation.
+This repository is a FastAPI service built around a LangGraph-based supervisor and research workflow. The application records chat messages in PostgreSQL, invokes a supervisor agent, and uses tool-backed agents for research, email handling, and report generation.
 
 ## Overview
 
